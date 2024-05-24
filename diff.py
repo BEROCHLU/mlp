@@ -64,7 +64,7 @@ class FinalPredictionCallback(tf.keras.callbacks.Callback):
 
 # モデルのトレーニング
 history = model.fit(
-    X, y, epochs=100, batch_size=10, verbose=0, callbacks=[FinalPredictionCallback()]
+    X, y, epochs=200, batch_size=10, verbose=0, callbacks=[FinalPredictionCallback()]
 )
 
 # モデルの評価
@@ -77,11 +77,13 @@ cumulative_results = []
 # reduceを使って蓄積しながら結果をリストに格納する関数
 def accumulate_and_collect(accumulated, current):
     new_accumulated = accumulated + current
+    new_accumulated = np.round(new_accumulated, 2)
     cumulative_results.append(new_accumulated)
     return new_accumulated
 
 # 初期値0でreduceを実行
 final_result = reduce(accumulate_and_collect, differences_percentage, 0)
+print(cumulative_results)
 
 # グラフをプロット
 plt.figure(figsize=(10, 6))
@@ -90,4 +92,5 @@ plt.title('Cumulative Differences in Percentage')
 plt.xlabel('Index')
 plt.ylabel('Cumulative Value')
 plt.grid(True)
+plt.savefig("./image/latest-acc.png")  # showの前でないと機能しない
 plt.show()
