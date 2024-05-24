@@ -9,8 +9,8 @@ from keras import models, layers, optimizers
 import matplotlib.pyplot as plt
 
 # 乱数シードを固定
-np.random.seed(42)
-tf.random.set_seed(42)
+np.random.seed(0)
+tf.random.set_seed(0)
 
 # JSONファイルを読み込む
 try:
