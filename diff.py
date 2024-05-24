@@ -1,8 +1,12 @@
 import json
+from functools import reduce
+from pprint import pprint
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from keras import models, layers, optimizers
+import matplotlib.pyplot as plt
 
 # 乱数シードを固定
 np.random.seed(42)
@@ -55,7 +59,7 @@ class FinalPredictionCallback(tf.keras.callbacks.Callback):
             # 差分をパーセントに直して表示
             differences_percentage = ((y - scaled_predictions) / scaled_predictions) * 100
             differences_percentage = np.round(differences_percentage, 2)
-            print(differences_percentage)
+            pprint(differences_percentage)
 
 
 # モデルのトレーニング
@@ -65,4 +69,25 @@ history = model.fit(
 
 # モデルの評価
 loss = model.evaluate(X, y)
-print(f"Final Loss: {loss:.6f}")
+pprint(f"Final Loss: {loss:.6f}\n")
+
+# 累積結果を格納するリストを初期化
+cumulative_results = []
+
+# reduceを使って蓄積しながら結果をリストに格納する関数
+def accumulate_and_collect(accumulated, current):
+    new_accumulated = accumulated + current
+    cumulative_results.append(new_accumulated)
+    return new_accumulated
+
+# 初期値0でreduceを実行
+final_result = reduce(accumulate_and_collect, differences_percentage, 0)
+
+# グラフをプロット
+plt.figure(figsize=(10, 6))
+plt.plot(cumulative_results, marker='o')
+plt.title('Cumulative Differences in Percentage')
+plt.xlabel('Index')
+plt.ylabel('Cumulative Value')
+plt.grid(True)
+plt.show()
