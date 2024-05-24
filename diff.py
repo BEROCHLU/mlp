@@ -10,7 +10,7 @@ tf.random.set_seed(42)
 
 # JSONファイルを読み込む
 try:
-    with open("/json/seikika.json", "r", encoding="utf-8") as file:
+    with open("./json/seikika.json", "r", encoding="utf-8") as file:
         data = json.load(file)
 except FileNotFoundError:
     print("Config file not found.")
@@ -50,14 +50,15 @@ class FinalPredictionCallback(tf.keras.callbacks.Callback):
         global scaled_predictions
         if epoch == self.params["epochs"] - 1:  # 最後のエポックの場合
             predictions = model.predict(X, verbose=0)
-            scaled_predictions = predictions.flatten() * data["div"]
-            print(f"Final Scaled Predictions = {scaled_predictions}")
+            scaled_predictions = predictions.flatten()
+            # print(f"Final Scaled Predictions = {scaled_predictions}")
 
-            # 差分を計算して表示
-            differences = scaled_predictions - y * data["div"]
+            # 差分をパーセントに直して表示
+            differences_percentage = ((y - scaled_predictions) / scaled_predictions) * 100
             print(
-                f"Differences between scaled predictions and actual outputs: {differences}"
+                f"Differences between scaled predictions and actual outputs (in percentage):\n"
             )
+            print(differences_percentage)
 
 
 # モデルのトレーニング
