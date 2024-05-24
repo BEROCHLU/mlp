@@ -39,7 +39,14 @@ y = np.array(outputs)
 # モデルの構築
 model = models.Sequential()
 model.add(layers.Input(shape=(2,)))
-model.add(layers.Dense(32, activation="relu", kernel_initializer="he_normal"))
+model.add(
+    layers.Dense(
+        32,
+        activation="relu",
+        kernel_initializer="he_normal",
+        # kernel_regularizer=keras.regularizers.l2(0.01),
+    )
+)
 model.add(layers.Dense(1))
 
 # モデルのコンパイル
@@ -62,9 +69,19 @@ class FinalPredictionCallback(tf.keras.callbacks.Callback):
             pprint(differences_percentage)
 
 
+# EarlyStoppingコールバックの設定
+early_stopping_callback = tf.keras.callbacks.EarlyStopping(
+    monitor="loss", min_delta=0.0001, patience=1000, verbose=1, mode="min"
+)
+
 # モデルのトレーニング
 history = model.fit(
-    X, y, epochs=200, batch_size=10, verbose=0, callbacks=[FinalPredictionCallback()]
+    X,
+    y,
+    epochs=555,
+    batch_size=55,
+    verbose=0,
+    callbacks=[FinalPredictionCallback(), early_stopping_callback],
 )
 
 # モデルの評価
@@ -74,6 +91,7 @@ pprint(f"Final Loss: {loss:.6f}\n")
 # 累積結果を格納するリストを初期化
 cumulative_results = []
 
+
 # reduceを使って蓄積しながら結果をリストに格納する関数
 def accumulate_and_collect(accumulated, current):
     new_accumulated = accumulated + current
@@ -81,16 +99,17 @@ def accumulate_and_collect(accumulated, current):
     cumulative_results.append(new_accumulated)
     return new_accumulated
 
+
 # 初期値0でreduceを実行
 final_result = reduce(accumulate_and_collect, differences_percentage, 0)
 print(cumulative_results)
 
 # グラフをプロット
 plt.figure(figsize=(10, 6))
-plt.plot(cumulative_results, marker='o')
-plt.title('Cumulative Differences in Percentage')
-plt.xlabel('Index')
-plt.ylabel('Cumulative Value')
+plt.plot(cumulative_results, marker="o")
+plt.title("Cumulative Differences in Percentage")
+plt.xlabel("Index")
+plt.ylabel("Cumulative Value")
 plt.grid(True)
 plt.savefig("./image/latest-acc.png")  # showの前でないと機能しない
 plt.show()
