@@ -41,29 +41,26 @@ model.add(layers.Dense(1))
 # モデルのコンパイル
 model.compile(optimizer=optimizers.Adam(learning_rate=0.001), loss="mean_squared_error")
 
-scaled_predictions = []
+differences_percentage = np.array([])
 
 
 # コールバッククラスの定義
 class FinalPredictionCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
-        global scaled_predictions
+        global differences_percentage
+
         if epoch == self.params["epochs"] - 1:  # 最後のエポックの場合
             predictions = model.predict(X, verbose=0)
             scaled_predictions = predictions.flatten()
-            # print(f"Final Scaled Predictions = {scaled_predictions}")
-
             # 差分をパーセントに直して表示
             differences_percentage = ((y - scaled_predictions) / scaled_predictions) * 100
-            print(
-                f"Differences between scaled predictions and actual outputs (in percentage):\n"
-            )
+            differences_percentage = np.round(differences_percentage, 2)
             print(differences_percentage)
 
 
 # モデルのトレーニング
 history = model.fit(
-    X, y, epochs=100, batch_size=10, verbose=1, callbacks=[FinalPredictionCallback()]
+    X, y, epochs=100, batch_size=10, verbose=0, callbacks=[FinalPredictionCallback()]
 )
 
 # モデルの評価
