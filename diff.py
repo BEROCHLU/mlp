@@ -50,7 +50,7 @@ model.add(layers.Input(shape=(2,)))
 model.add(
     layers.Dense(
         32,
-        activation="relu",
+        activation="sigmoid",
         kernel_initializer=keras.initializers.Constant(0.5),  # he_normal
         # kernel_regularizer=keras.regularizers.l2(0.01),
     )
