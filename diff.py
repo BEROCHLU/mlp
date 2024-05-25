@@ -93,7 +93,7 @@ history = model.fit(
 
 # モデルの評価
 loss = model.evaluate(X, y)
-pprint(f"Final Loss: {loss:.6f}\n")
+pprint(f"Final Loss: {loss:.6f}")
 
 # 累積結果を格納するリストを初期化
 cumulative_results = []
@@ -109,13 +109,16 @@ def accumulate_and_collect(accumulated, current):
 
 # 初期値0でreduceを実行
 final_result = reduce(accumulate_and_collect, differences_percentage, 0)
-print(cumulative_results)
+pprint(np.array(cumulative_results))
 
+min_val = min(cumulative_results)
+max_val = max(cumulative_results)
+norm = (final_result - min_val) / (max_val - min_val)
+print(f"Normalized_value: {norm:.2f}")
 # グラフをプロット
 plt.figure(figsize=(12, 6))
 plt.plot([date.strftime("%b%d") for date in shortdates], cumulative_results, marker="o")
-plt.title("Cumulative Differences in Percentage")
-plt.xlabel("Date")
+plt.title(f"Final Loss: {loss:.6f}, Norm: {norm:.2f}")
 plt.ylabel("acc")
 plt.grid(which="both")
 # x軸のラベルを45度回転させる
