@@ -51,7 +51,7 @@ model.add(
     layers.Dense(
         32,
         activation="relu",
-        kernel_initializer="he_normal",
+        kernel_initializer="he_normal",  # he_normal | he_uniform
         # kernel_regularizer=keras.regularizers.l2(0.01),
     )
 )
