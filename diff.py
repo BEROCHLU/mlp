@@ -51,7 +51,7 @@ model.add(
     layers.Dense(
         32,
         activation="relu",
-        kernel_initializer="he_normal",  # he_normal | he_uniform
+        kernel_initializer=keras.initializers.Constant(0.5),  # he_normal
         # kernel_regularizer=keras.regularizers.l2(0.01),
     )
 )
@@ -115,6 +115,7 @@ min_val = min(cumulative_results)
 max_val = max(cumulative_results)
 norm = (final_result - min_val) / (max_val - min_val)
 print(f"Normalized_value: {norm:.2f}")
+
 # グラフをプロット
 plt.figure(figsize=(12, 6))
 plt.plot([date.strftime("%b%d") for date in shortdates], cumulative_results, marker="o")
