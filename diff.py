@@ -119,7 +119,7 @@ plt.xlabel("Date")
 plt.ylabel("acc")
 plt.grid(which="both")
 # x軸のラベルを45度回転させる
-plt.xticks(rotation=45, ha='right')
+plt.xticks(rotation=45, ha="right")
 
 plt.savefig("./image/latest-acc.png")  # showの前でないと機能しない
 plt.show()
