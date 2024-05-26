@@ -40,6 +40,7 @@ for strDate in dates:
     date = datetime.strptime(strDate, "%Y-%m-%d")
     shortdates.append(date)
 
+len_size = len(outputs)
 # Numpy配列に変換
 X = np.array(inputs)
 y = np.array(outputs)
@@ -49,7 +50,7 @@ model = models.Sequential()
 model.add(layers.Input(shape=(2,)))
 model.add(
     layers.Dense(
-        32,
+        16,
         activation="sigmoid",
         kernel_initializer=keras.initializers.Constant(0.5),  # he_normal
         # kernel_regularizer=keras.regularizers.l2(0.01),
@@ -86,7 +87,7 @@ history = model.fit(
     X,
     y,
     epochs=1000,
-    batch_size=55,
+    batch_size=len_size,
     verbose=1,
     callbacks=[FinalPredictionCallback(), early_stopping_callback],
 )
@@ -111,8 +112,9 @@ def accumulate_and_collect(accumulated, current):
 final_result = reduce(accumulate_and_collect, differences_percentage, 0)
 pprint(np.array(cumulative_results))
 
-min_val = min(cumulative_results)
-max_val = max(cumulative_results)
+arrNorm = cumulative_results[:-1]  # 最大最小個超えもあるため最後の値だけを削除
+min_val = min(arrNorm)
+max_val = max(arrNorm)
 norm = (final_result - min_val) / (max_val - min_val)
 print(f"Normalized_value: {norm:.2f}")
 
