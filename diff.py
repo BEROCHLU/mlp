@@ -1,17 +1,17 @@
 import json
+from datetime import datetime
 from functools import reduce
 from pprint import pprint
-from datetime import datetime
 
+import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
+from keras import layers, models, optimizers
 from tensorflow import keras
-from keras import models, layers, optimizers
-import matplotlib.pyplot as plt
 
-# 乱数シードを固定
-np.random.seed(0)
-tf.random.set_seed(0)
+# np.random.seed(0)
+# tf.random.set_seed(0)
 
 # JSONファイルを読み込む
 try:
@@ -40,6 +40,10 @@ for strDate in dates:
     date = datetime.strptime(strDate, "%Y-%m-%d")
     shortdates.append(date)
 
+dfPrint = pd.DataFrame()
+dfPrint["date"] = shortdates
+DIV = data["div"]
+
 len_size = len(outputs)
 # Numpy配列に変換
 X = np.array(inputs)
@@ -67,13 +71,16 @@ differences_percentage = np.array([])
 # コールバッククラスの定義
 class FinalPredictionCallback(keras.callbacks.Callback):
     def on_train_end(self, logs=None):
-        global differences_percentage
+        global differences_percentage, dfPrint
 
         predictions = model.predict(X, verbose=0)
         scaled_predictions = predictions.flatten()
         # 差分をパーセントに直して表示
         differences_percentage = ((y - scaled_predictions) / scaled_predictions) * 100
         differences_percentage = np.round(differences_percentage, 2)
+
+        dfPrint["Predict"] = np.round(scaled_predictions * DIV, 2)
+        dfPrint["True"] = np.round(y * DIV, 2)
         pprint(differences_percentage)
 
 
@@ -94,7 +101,8 @@ history = model.fit(
 
 # モデルの評価
 loss = model.evaluate(X, y)
-pprint(f"Final Loss: {loss:.6f}")
+strLoss = f"{loss:.6f}"
+pprint(f"Final Loss: {strLoss}")
 
 # 累積結果を格納するリストを初期化
 cumulative_results = []
@@ -115,13 +123,19 @@ pprint(np.array(cumulative_results))
 arrNorm = cumulative_results[:-1]  # 最大最小個超えもあるため最後の値だけを削除
 min_val = min(arrNorm)
 max_val = max(arrNorm)
-norm = (final_result - min_val) / (max_val - min_val)
-print(f"Normalized_value: {norm:.2f}")
+norm = ((final_result - min_val) / (max_val - min_val)) * 100
+strNorm = f"{norm:.1f}"
 
+dfPrint["diff"] = differences_percentage
+dfPrint["acc"] = cumulative_results
+
+pprint(dfPrint)
+print(f"Norm: {strNorm}")
+print(f"Mean Absolute Error: {np.mean(np.abs(differences_percentage)):.2f}%")
 # グラフをプロット
 plt.figure(figsize=(12, 6))
 plt.plot([date.strftime("%b%d") for date in shortdates], cumulative_results, marker="o")
-plt.title(f"Final Loss: {loss:.6f}, Norm: {norm:.2f}")
+plt.title(f"Final Loss: {strLoss}, Norm: {strNorm}")
 plt.ylabel("acc")
 plt.grid(which="both")
 # x軸のラベルを45度回転させる
