@@ -81,11 +81,11 @@ class FinalPredictionCallback(keras.callbacks.Callback):
 
         dfPrint["Predict"] = np.round(scaled_predictions * DIV, 2)
         dfPrint["True"] = np.round(y * DIV, 2)
-        pprint(differences_percentage)
+        # pprint(differences_percentage)
 
 
 # EarlyStoppingコールバックの設定
-early_stopping_callback = keras.callbacks.EarlyStopping(
+early_stopping = keras.callbacks.EarlyStopping(
     monitor="loss", min_delta=0.0001, patience=300, verbose=0, mode="min"
 )
 
@@ -95,14 +95,13 @@ history = model.fit(
     y,
     epochs=1000,
     batch_size=len_size,
-    verbose=1,
-    callbacks=[FinalPredictionCallback(), early_stopping_callback],
+    verbose=0,
+    callbacks=[FinalPredictionCallback(), early_stopping],
 )
 
 # モデルの評価
 loss = model.evaluate(X, y)
 strLoss = f"{loss:.6f}"
-pprint(f"Final Loss: {strLoss}")
 
 # 累積結果を格納するリストを初期化
 cumulative_results = []
@@ -118,20 +117,22 @@ def accumulate_and_collect(accumulated, current):
 
 # 初期値0でreduceを実行
 final_result = reduce(accumulate_and_collect, differences_percentage, 0)
-pprint(np.array(cumulative_results))
+# pprint(np.array(cumulative_results))
 
 arrNorm = cumulative_results[:-1]  # 最大最小個超えもあるため最後の値だけを削除
 min_val = min(arrNorm)
 max_val = max(arrNorm)
 norm = ((final_result - min_val) / (max_val - min_val)) * 100
-strNorm = f"{norm:.1f}"
+strNorm = f"{norm:.2f}"
 
 dfPrint["diff"] = differences_percentage
 dfPrint["acc"] = cumulative_results
 
 pprint(dfPrint)
-print(f"Norm: {strNorm}")
 print(f"Mean Absolute Error: {np.mean(np.abs(differences_percentage)):.2f}%")
+print(f"Epoch: {early_stopping.stopped_epoch}, Final Loss: {strLoss}")
+print(f"Norm: {strNorm}")
+
 # グラフをプロット
 plt.figure(figsize=(12, 6))
 plt.plot([date.strftime("%b%d") for date in shortdates], cumulative_results, marker="o")
