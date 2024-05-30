@@ -1,0 +1,14 @@
+{
+  "name": "mlp",
+  "version": "1.0.0",
+  "description": "このプロジェクトは、JSONファイルから読み込んだデータを用いてTensorFlowとKerasを使用した回帰モデルのトレーニングを行い、モデルの性能を評価するものです。",
+  "main": "index.js",
+  "scripts": {
+    "tf": "python sakata-tf.py >> ./result/sakata-tf.txt",
+    "tf-batch": "python tf-batch.py > ./result/tf-batch.log",
+    "plot-single": "python plot-single.py"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -3,15 +3,12 @@ from datetime import datetime
 from functools import reduce
 from pprint import pprint
 
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from keras import layers, models, optimizers
 from tensorflow import keras
-
-# np.random.seed(0)
-# tf.random.set_seed(0)
 
 # JSONファイルを読み込む
 try:
@@ -100,7 +97,7 @@ history = model.fit(
 )
 
 # モデルの評価
-loss = model.evaluate(X, y)
+loss = model.evaluate(X, y, verbose=0)
 strLoss = f"{loss:.6f}"
 
 # 累積結果を格納するリストを初期化
@@ -142,5 +139,5 @@ plt.grid(which="both")
 # x軸のラベルを45度回転させる
 plt.xticks(rotation=45, ha="right")
 
-plt.savefig("./image/latest-acc.png")  # showの前でないと機能しない
+plt.savefig("./result/latest-acc.png")  # showの前でないと機能しない
 plt.show()
