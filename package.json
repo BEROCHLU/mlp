@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "tf": "python sakata-tf.py >> ./result/sakata-tf.txt",
-    "tf-batch": "python tf-batch.py > ./result/tf-batch.log",
+    "tf-batch": "python tf-batch.py > ./result/tf-batch.log && python plot-single.py",
+    "tfw-batch": "python tfw-batch.py > ./result/tf-batch.log && python plot-single.py",
     "plot-single": "python plot-single.py"
   },
   "keywords": [],
