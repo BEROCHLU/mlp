@@ -56,7 +56,7 @@ ax.plot(arrInt, norm_values, marker="o", markersize=4)
 # X軸のラベルをインデックスに設定
 ax.set_xticks(arrInt)
 # インデックスをstring日付に置き換える
-ax.set_xticklabels([date.strftime("%b%d") for date in lstDt], rotation=45, ha="right")
+ax.set_xticklabels([date.strftime("%m%d") for date in lstDt], rotation=45, ha="right")
 # X軸の範囲を調整
 ax.set_xlim([0, len(lstDt) - 1])
 

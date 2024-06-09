@@ -118,4 +118,4 @@ dfPrint["acc"] = cumulative_results
 pprint(dfPrint)
 print(f"Mean Absolute Error: {np.mean(np.abs(differences_percentage)):.2f}%")
 print(f"Epoch: {early_stopping.stopped_epoch}, Final Loss: {strLoss}")
-print(f"Norm: {strNorm}")
+print(f"Norm: {strNorm}\n")
