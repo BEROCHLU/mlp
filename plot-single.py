@@ -7,7 +7,7 @@ from matplotlib.ticker import AutoMinorLocator
 
 
 # ファイルを読み込む
-file_path = "./result/tf-batch.log"
+file_path = "./result/output.log"
 
 with open(file_path, "r", encoding="utf-8") as file:
     # ファイルの内容を読み込む
