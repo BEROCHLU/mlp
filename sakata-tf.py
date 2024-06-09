@@ -132,7 +132,7 @@ print(f"Norm: {strNorm}")
 
 # グラフをプロット
 plt.figure(figsize=(12, 6))
-plt.plot([date.strftime("%b%d") for date in shortdates], cumulative_results, marker="o")
+plt.plot([date.strftime("%m%d") for date in shortdates], cumulative_results, marker="o")
 plt.title(f"Final Loss: {strLoss}, Norm: {strNorm}")
 plt.ylabel("acc")
 plt.grid(which="both")
