@@ -1,35 +1,31 @@
-# TensorFlowを用いた回帰モデルの実装
+# MLP Project
 
 このプロジェクトは、JSONファイルから読み込んだデータを用いてTensorFlowとKerasを使用した回帰モデルのトレーニングを行い、モデルの性能を評価するものです。
 
-## 必要条件
+## 概要
 
-- Python 3.x
+プロジェクトは、機械学習の回帰モデルを構築し、トレーニングするためのPythonスクリプトを含んでいます。データは`batch/`ディレクトリ内のJSONファイルから読み込まれ、結果は`result/`ディレクトリに保存されます。
+
+## 使用技術
+
+- Python
 - TensorFlow
+- Keras
+- Pandas
 - NumPy
-- Matplotlib
 
-必要なパッケージは以下のコマンドでインストールできます。
+## 主要スクリプト
 
-```bash
-pip install tensorflow numpy matplotlib
-```
+- `src/inlinestd.py`: 標準入力からJSONデータを読み込み、モデルのトレーニングを行います。
+- `src/daily-acc.py`: 日次でモデルの精度を計算し、結果を`result/daily-acc.txt`に保存します。
+- `src/batch-acc.py`: バッチ処理によるモデルの精度を計算し、結果を`result/batch-acc.log`に保存します。
+- `src/batch-accw.py`: 重み付けされたバッチ処理によるモデルの精度を計算し、結果を`result/batch-accw.log`に保存します。
 
-## プロジェクト構成
+## 実行方法
 
-- `seikika.json`: 入力データを含むJSONファイル
-- `diff.py`: データの読み込み、モデルのトレーニング、結果のプロットを行うメインスクリプト
-- `./image/latest-acc.png`: 結果の累積プロットの出力画像
+LinuxとWindowsの両方で実行スクリプトが用意されています。
 
-## 使用方法
+- Linux: `run_Linux.sh`スクリプトを実行してください。
+- Windows: `run_Windows.ps1`スクリプトを実行してください。
 
-1. JSONファイルを `./json/` ディレクトリに配置し、 `seikika.json` と名前を付けます。
-2. `diff.py` スクリプトを実行します。
-
-```bash
-python diff.py
-```
-
-## ライセンス
-
-このプロジェクトはMITライセンスの下で提供されています。詳細はLICENSEファイルをご覧ください。
+これらのスクリプトは、`batch/`ディレクトリ内の全てのJSONファイルに対して`src/inlinestd.py`を実行し、結果を`result/output.log`に追記します。
