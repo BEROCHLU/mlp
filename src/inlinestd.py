@@ -1,22 +1,20 @@
+#!/usr/bin/env python
 import json
+import sys
 from datetime import datetime
 from functools import reduce
 from pprint import pprint
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from keras import layers, models, optimizers
 from tensorflow import keras
 
-# JSONファイルを読み込む
+# 標準入力からJSONデータを読み込む
 try:
-    with open("./json/seikika.json", "r", encoding="utf-8") as file:
-        data = json.load(file)
-except FileNotFoundError:
-    print("Config file not found.")
-    exit(1)
+    input_str = sys.stdin.read() # 標準入力からの文字列を受け取る
+    data = json.loads(input_str)  # 文字列をJSONとして解析
 except json.JSONDecodeError:
     print("Error decoding JSON.")
     exit(1)
@@ -53,8 +51,7 @@ model.add(
     layers.Dense(
         16,
         activation="sigmoid",
-        kernel_initializer=keras.initializers.Constant(0.5),  # he_normal
-        # kernel_regularizer=keras.regularizers.l2(0.01),
+        kernel_initializer=keras.initializers.Constant(0.5),
     )
 )
 model.add(layers.Dense(1))
@@ -64,7 +61,6 @@ model.compile(optimizer=optimizers.Adam(learning_rate=0.001), loss="mean_squared
 
 differences_percentage = np.array([])
 
-
 # コールバッククラスの定義
 class FinalPredictionCallback(keras.callbacks.Callback):
     def on_train_end(self, logs=None):
@@ -72,14 +68,11 @@ class FinalPredictionCallback(keras.callbacks.Callback):
 
         predictions = model.predict(X, verbose=0)
         scaled_predictions = predictions.flatten()
-        # 差分をパーセントに直して表示
         differences_percentage = ((y - scaled_predictions) / scaled_predictions) * 100
         differences_percentage = np.round(differences_percentage, 2)
 
         dfPrint["Predict"] = np.round(scaled_predictions * DIV, 2)
         dfPrint["True"] = np.round(y * DIV, 2)
-        # pprint(differences_percentage)
-
 
 # EarlyStoppingコールバックの設定
 early_stopping = keras.callbacks.EarlyStopping(
@@ -103,7 +96,6 @@ strLoss = f"{loss:.6f}"
 # 累積結果を格納するリストを初期化
 cumulative_results = []
 
-
 # reduceを使って蓄積しながら結果をリストに格納する関数
 def accumulate_and_collect(accumulated, current):
     new_accumulated = accumulated + current
@@ -111,12 +103,10 @@ def accumulate_and_collect(accumulated, current):
     cumulative_results.append(new_accumulated)
     return new_accumulated
 
-
 # 初期値0でreduceを実行
 final_result = reduce(accumulate_and_collect, differences_percentage, 0)
-# pprint(np.array(cumulative_results))
 
-arrNorm = cumulative_results[:-1]  # 最大最小個超えもあるため最後の値だけを削除
+arrNorm = cumulative_results[:-1]
 min_val = min(arrNorm)
 max_val = max(arrNorm)
 norm = ((final_result - min_val) / (max_val - min_val)) * 100
@@ -129,15 +119,4 @@ pprint(dfPrint)
 print(f"Mean Absolute Error: {np.mean(np.abs(differences_percentage)):.2f}%")
 print(f"Epoch: {early_stopping.stopped_epoch}, Final Loss: {strLoss}")
 print(f"Norm: {strNorm}")
-
-# グラフをプロット
-plt.figure(figsize=(12, 6))
-plt.plot([date.strftime("%m%d") for date in shortdates], cumulative_results, marker="o")
-plt.title(f"Final Loss: {strLoss}, Norm: {strNorm}")
-plt.ylabel("acc")
-plt.grid(which="both")
-# x軸のラベルを45度回転させる
-plt.xticks(rotation=45, ha="right")
-
-plt.savefig("./result/latest-acc.png")  # showの前でないと機能しない
-plt.show()
+print("===")

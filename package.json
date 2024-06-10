@@ -4,10 +4,10 @@
   "description": "このプロジェクトは、JSONファイルから読み込んだデータを用いてTensorFlowとKerasを使用した回帰モデルのトレーニングを行い、モデルの性能を評価するものです。",
   "main": "index.js",
   "scripts": {
-    "tf": "python sakata-tf.py >> ./result/sakata-tf.txt",
-    "tf-batch": "python tf-batch.py > ./result/tf-batch.log && python plot-single.py",
-    "tfw-batch": "python tfw-batch.py > ./result/tf-batch.log && python plot-single.py",
-    "plot-single": "python plot-single.py"
+    "daily": "python ./src/daily-acc.py >> ./result/daily-acc.txt",
+    "batch-acc": "python ./src/batch-acc.py > ./result/batch-acc.log && python ./src/plot-batch.py",
+    "batch-accw": "python ./src/batch-accw.py > ./result/batch-accw.log && python ./src/plot-batch.py",
+    "plot-batch": "python ./src/plot-batch.py"
   },
   "keywords": [],
   "author": "",

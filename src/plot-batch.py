@@ -14,7 +14,7 @@ with open(file_path, "r", encoding="utf-8") as file:
     content = file.read()
 
 # セクションを分割
-sections = content.split("\n\n")
+sections = content.split("===")
 
 # セクションごとの最後の日付とNormの値を抽出
 lstDt = []
@@ -60,14 +60,10 @@ ax.set_xticklabels([date.strftime("%m%d") for date in lstDt], rotation=45, ha="r
 # X軸の範囲を調整
 ax.set_xlim([0, len(lstDt) - 1])
 
-# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))
-# plt.gca().xaxis.set_major_locator(mdates.DayLocator(bymonthday=None, interval=1, tz=None))
-# plt.gcf().autofmt_xdate()  # X軸の日付ラベルを斜めにして重なりを防ぐ
-
 plt.gca().yaxis.set_minor_locator(AutoMinorLocator(2))  # Y軸の補助メモリを2ずつに設定
 plt.title("The Sakata Index", fontsize=10)
 plt.xticks(fontsize=9)  # X軸の目盛りのフォントサイズを設定
 plt.grid(which="both")
 plt.tight_layout()
-plt.savefig("./result/plot-single.png")  # showの前でないと機能しない
+plt.savefig("./result/plot-batch.png")  # showの前でないと機能しない
 plt.show()
